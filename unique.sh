@@ -19,9 +19,12 @@ for genome in "${species[@]}"
 
     	# Count the number of lines in the outfile
 		line_count=$( wc -l < "${outfile}")
-    
-   		# Write the genome name and row count to the output file
-		echo "${genome} ${line_count}" >> ${output_file}
+
+		# Calculate the conservation rate 
+		conservation_rate=$(echo "scale=3; (${line_count}/11959405)*100" | bc)
+
+   		# Write the genome name, row count, and conservation rate to the output file
+		echo "${genome} ${line_count} ${conservation_rate}" >> ${output_file}
 
 		# Compress the outfile
 		gzip "${outfile}"
