@@ -59,7 +59,6 @@ def bed_to_vcf(bed_file, vcf_file):
         # Write VCF header
         vcf.write("##fileformat=VCFv4.2\n")
         vcf.write("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n")
-
         for line in bed:
             columns = line.strip().split('\t')
             if len(columns) >= 4:
@@ -69,22 +68,21 @@ def bed_to_vcf(bed_file, vcf_file):
                 if len(ref_alt) == 2:
                     ref = ref_alt[0]
                     alt = ref_alt[1]
-                    
                     # Create the VCF line
                     vcf_line = f"{chr}\t{start}\t.\t{ref}\t{alt}\t.\t.\t.\n"
                     vcf.write(vcf_line)
 
 # Convert bed files into vcf files for VEP analysis
-bed_to_vcf("vep_tissue_eQTLs.bed", "input/vep_tissue_eQTLs.vcf")
+bed_to_vcf("vep_tissue_eQTLs.bed", "input/vep_present_eQTLs.vcf")
 bed_to_vcf("eQTLs_not_in_species.bed", "input/eQTLs_not_in_species.vcf")
-bed_to_vcf("frequent_eQTLs.bed", "input/frequent_eQTLs.vcf")
+bed_to_vcf("multiple_eQTLs.bed", "input/multiple_eQTLs.vcf")
 
 # run vep analysis
 os.chdir("../ensembl-vep")
-subprocess.call("./vep -i ../vep/input/vep_input_signif.vcf -o ../vep/output/vep_all_output.txt --cache --dir_cache ../vep/cache --assembly GRCh37 --offline", shell=True)
-subprocess.call("./vep -i ../vep/input/vep_tissue_eQTLs.vcf -o ../vep/output/vep_tissue_output.txt --cache --dir_cache ../vep/cache --assembly GRCh37 --offline", shell=True)
-subprocess.call("./vep -i ../vep/input/eQTLs_not_in_species.vcf -o ../vep/output/vep_non_species_output.txt --cache --dir_cache ../vep/cache --assembly GRCh37 --offline", shell=True)
-subprocess.call("./vep -i ../vep/input/frequent_eQTLs.vcf -o ../vep/output/vep_tissue_output.txt --cache --dir_cache ../vep/cache --assembly GRCh37 --offline", shell=True)
+subprocess.call("./vep -i ../vep/input/vep_GTEx_signif.vcf -o ../vep/output/vep_GTEx_output.txt --cache --dir_cache ../vep/cache --assembly GRCh37 --offline", shell=True)
+subprocess.call("./vep -i ../vep/input/vep_present_eQTLs.vcf -o ../vep/output/vep_present_output.txt --cache --dir_cache ../vep/cache --assembly GRCh37 --offline", shell=True)
+subprocess.call("./vep -i ../vep/input/eQTLs_not_in_species.vcf -o ../vep/output/vep_absent_output.txt --cache --dir_cache ../vep/cache --assembly GRCh37 --offline", shell=True)
+subprocess.call("./vep -i ../vep/input/multiple_eQTLs.vcf -o ../vep/output/vep_multiple_output.txt --cache --dir_cache ../vep/cache --assembly GRCh37 --offline", shell=True)
 
 
 
